@@ -70,7 +70,7 @@ def izmeni_kategoriju(id_kategorije):
 
 
     
-@app.route("/api/kategorije/<int:id_kategorije>", methods=["DELETE"])
+@app.route("/api/kategorije/<id_kategorije>", methods=["DELETE"])
 def obrisi_kategoriju(id_kategorije):
     db = mysql.get_db()
     cursor = db.cursor()
@@ -79,5 +79,3 @@ def obrisi_kategoriju(id_kategorije):
     if obrisano > 0:
         return jsonify({"message": f"Kategorija sa id-em {id_kategorije} je uspjesno obrisana"}), 200
     return jsonify({"error": "Kategorija nije pronadjena"}), 404
-
-
