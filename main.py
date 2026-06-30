@@ -155,11 +155,75 @@ def obrisi_jelo(id_jela):
 #SASTOJCI
 #=================================================================
 
+@app.route("/api/sastojci", methods=["GET"])
+def dobavi_sve_sastojke():
+    db = mysql.get_db()
+    cursor = db.cursor()
+    cursor.execute("""
+        SELECT s.id, s.naziv, s.jedinica_mjere, s.jelo_id, j.naziv AS jelo_naziv
+        FROM sastojci s
+        LEFT JOIN jela j ON s.jelo_id = j.id
+    """)
+    sastojci = cursor.fetchall()
+    return jsonify(sastojci), 200
 
 
 
+@app.route("/api/sastojci/<id_sastojka>", methods=["GET"])
+def dobavi_sastojak_po_id(id_sastojka):
+    db = mysql.get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM sastojci WHERE id = %s", (id_sastojka,))
+    sastojak = cursor.fetchone()
+    if sastojak is None:
+        return jsonify({"error": "Sastojak nije pronadjen"}), 404
+    return jsonify(sastojak), 200
 
 
+@app.route("/api/sastojci", methods=["POST"])
+def dodaj_sastojak():
+    podaci = dict(flask.request.json)
+    db = mysql.get_db()
+    cursor = db.cursor()
+    cursor.execute(
+        "INSERT INTO sastojci (naziv, jedinica_mjere, jelo_id) VALUES (%s, %s, %s)",
+        (podaci["naziv"], podaci["jedinica_mjere"], podaci["jelo_id"])
+    )
+    db.commit()
+    return jsonify(podaci), 201
+
+
+
+@app.route("/api/sastojci/<id_sastojka>", methods=["PUT"])
+def izmijeni_sastojak(id_sastojka):
+    podaci = dict(flask.request.json)
+    db = mysql.get_db()
+    cursor = db.cursor()
+    cursor.execute(
+        "UPDATE sastojci SET naziv = %s, jedinica_mjere = %s, jelo_id = %s WHERE id = %s",
+        (podaci["naziv"], podaci["jedinica_mjere"], podaci["jelo_id"], id_sastojka)
+    )
+    db.commit()
+    if cursor.rowcount == 0:
+        return jsonify({"error": "Sastojak nije pronadjen"}), 404
+    return jsonify({"message": f"Sastojak sa id-em {id_sastojka} je uspjesno izmijenjen"}), 200
+
+
+
+@app.route("/api/sastojci/<id_sastojka>", methods=["DELETE"])
+def obrisi_sastojak(id_sastojka):
+    db = mysql.get_db()
+    cursor = db.cursor()
+    obrisano = cursor.execute("DELETE FROM sastojci WHERE id = %s", (id_sastojka,))
+    db.commit()
+    if obrisano > 0:
+        return jsonify({"message": f"Sastojak sa id-em {id_sastojka} je uspjesno obrisan"}), 200
+    return jsonify({"error": "Sastojak nije pronadjen"}), 404
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
 
 
 
