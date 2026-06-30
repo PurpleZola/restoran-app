@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>Restoran App</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+
+   <div id="app">
+    <h1>Restoran - Upravljanje menijem</h1>
+    <h2>Kategorije</h2>
+    <ul>
+        <li v-for="kategorija in kategorije" :key="kategorija.id">
+            {{ kategorija.naziv }} - {{ kategorija.opis }}
+        </li>
+    </ul>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
