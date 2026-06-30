@@ -4,19 +4,12 @@
     <meta charset="UTF-8">
     <title>Restoran App</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-   <div id="app">
-    <h1>Restoran - Upravljanje menijem</h1>
-    <h2>Kategorije</h2>
-    <ul>
-        <li v-for="kategorija in kategorije" :key="kategorija.id">
-            {{ kategorija.naziv }} - {{ kategorija.opis }}
-        </li>
-    </ul>
-    </div>
+    <div id="app"></div>
 
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>

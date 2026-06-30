@@ -1,12 +1,22 @@
+import TabelaKategorije from './components/tabela-kategorije.js';
+import FormaKategorije from './components/forma-kategorije.js';
+
 const app = Vue.createApp({
-    data(){
+    components: {
+        'tabela-kategorije': TabelaKategorije,
+        'forma-kategorije': FormaKategorije
+    },
+
+    data() {
         return {
             kategorije: []
         }
     },
-    mounted(){
+
+    mounted() {
         this.ucitajKategorije();
     },
+
     methods: {
         ucitajKategorije() {
             fetch('/api/kategorije')
@@ -15,8 +25,17 @@ const app = Vue.createApp({
                     this.kategorije = data;
                 });
         }
-    }
+    },
 
+    template: `
+    <h1>Restoran - Upravljanje menijem</h1>
+
+    <h2>Kategorije</h2>
+    <tabela-kategorije :kategorije="kategorije" @osvjezi="ucitajKategorije()"></tabela-kategorije>
+
+    <h2>Dodaj kategoriju</h2>
+    <forma-kategorije @osvjezi="ucitajKategorije()"></forma-kategorije>
+    `
 });
 
 app.mount('#app');
