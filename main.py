@@ -79,3 +79,88 @@ def obrisi_kategoriju(id_kategorije):
     if obrisano > 0:
         return jsonify({"message": f"Kategorija sa id-em {id_kategorije} je uspjesno obrisana"}), 200
     return jsonify({"error": "Kategorija nije pronadjena"}), 404
+
+
+
+#=================================================================
+#JELA
+#=================================================================
+
+
+@app.route("/api/jela", methods=["GET"])
+def dobavi_sva_jela():
+    db = mysql.get_db()
+    cursor = db.cursor()
+    cursor.execute("""
+        SELECT j.id, j.naziv, j.cijena, j.kategorija_id, k.naziv AS kategorija_naziv
+        FROM jela j
+        LEFT JOIN kategorije k ON j.kategorija_id = k.id
+    """)
+    jela = cursor.fetchall()
+    return jsonify(jela)
+
+
+@app.route("/api/jela/<int:id_jela>", methods=["GET"])
+def dobavi_jelo_po_id(id_jela):
+    db = mysql.get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM jela WHERE id = %s", (id_jela,))
+    jelo = cursor.fetchone()
+    if jelo is None:
+        return jsonify({"error": "Jelo nije pronadjeno"}), 404
+    return jsonify(jelo), 200
+
+
+@app.route("/api/jela", methods=["POST"])
+def dodaj_jelo():
+    podaci = dict(flask.request.json)
+    db = mysql.get_db()
+    cursor = db.cursor()
+    cursor.execute(
+        "INSERT INTO jela (naziv, cijena, kategorija_id) VALUES (%s, %s, %s)",
+        (podaci["naziv"], podaci["cijena"], podaci["kategorija_id"])
+    )
+    db.commit()
+    return jsonify(podaci), 201
+
+
+@app.route("/api/jela/<id_jela>", methods=["PUT"])
+def izmijeni_jelo(id_jela):
+    podaci = dict(flask.request.json)
+    db = mysql.get_db()
+    cursor = db.cursor()
+    cursor.execute(
+        "UPDATE jela SET naziv = %s, cijena = %s, kategorija_id = %s WHERE id = %s",
+        (podaci["naziv"], podaci["cijena"], podaci["kategorija_id"], id_jela)
+    )
+    db.commit()
+    if cursor.rowcount == 0:
+        return jsonify({"error": "Jelo nije pronadjeno"}), 404
+    return jsonify({"message": f"Jelo sa id-em {id_jela} je uspjesno izmijenjeno"}), 200
+
+
+@app.route("/api/jela/<id_jela>", methods=["DELETE"])
+def obrisi_jelo(id_jela):
+    db = mysql.get_db()
+    cursor = db.cursor()
+    obrisano = cursor.execute("DELETE FROM jela WHERE id = %s", (id_jela,))
+    db.commit()
+    if obrisano > 0:
+        return jsonify({"message": f"Jelo sa id-em {id_jela} je uspjesno obrisano"}), 200
+    return jsonify({"error": "Jelo nije pronadjeno"}), 404
+
+
+
+#=================================================================
+#SASTOJCI
+#=================================================================
+
+
+
+
+
+
+
+
+
+
