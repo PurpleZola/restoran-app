@@ -1,20 +1,26 @@
 import TabelaKategorije from './components/tabela-kategorije.js';
 import FormaKategorije from './components/forma-kategorije.js';
+import TabelaJela from './components/tabela-jela.js';
+import FormaJela from './components/forma-jela.js';
 
 const app = Vue.createApp({
     components: {
         'tabela-kategorije': TabelaKategorije,
-        'forma-kategorije': FormaKategorije
+        'forma-kategorije': FormaKategorije,
+        'tabela-jela': TabelaJela,
+        'forma-jela': FormaJela
     },
 
     data() {
         return {
-            kategorije: []
+            kategorije: [],
+            jela: []
         }
     },
 
     mounted() {
         this.ucitajKategorije();
+        this.ucitajJela();
     },
 
     methods: {
@@ -23,6 +29,13 @@ const app = Vue.createApp({
                 .then(response => response.json())
                 .then(data => {
                     this.kategorije = data;
+                });
+        },
+        ucitajJela() {
+            fetch('/api/jela')
+                .then(response => response.json())
+                .then(data => {
+                    this.jela = data;
                 });
         }
     },
@@ -35,6 +48,12 @@ const app = Vue.createApp({
 
     <h2>Dodaj kategoriju</h2>
     <forma-kategorije @osvjezi="ucitajKategorije()"></forma-kategorije>
+
+    <h2>Jela</h2>
+    <tabela-jela :jela="jela" @osvjezi="ucitajJela()"></tabela-jela>
+
+    <h2>Dodaj jelo</h2>
+    <forma-jela :kategorije="kategorije" @osvjezi="ucitajJela()"></forma-jela>
     `
 });
 
