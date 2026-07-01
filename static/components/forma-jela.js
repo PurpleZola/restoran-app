@@ -3,12 +3,14 @@ export default {
 
     data() {
         return {
-            jelo: { naziv: '', cijena: '', kategorija_id: '' }
+            jelo: { naziv: '', cijena: '', kategorija_id: '' },
+            izmjena: false,
+            idZaIzmjenu: null
         }
     },
 
     template: `
-    <form @submit.prevent="dodaj()">
+    <form @submit.prevent="sacuvaj()">
         <div>
             <label>Naziv:</label>
             <input v-model="jelo.naziv" type="text" required>
@@ -26,22 +28,46 @@ export default {
                 </option>
             </select>
         </div>
-        <button type="submit">Dodaj jelo</button>
+        <button type="submit">{{ izmjena ? 'Sacuvaj izmjene' : 'Dodaj jelo' }}</button>
+        <button v-if="izmjena" type="button" @click="otkazi()">Otkazi</button>
     </form>
     `,
 
     methods: {
-        dodaj() {
-            fetch('/api/jela', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(this.jelo)
-            })
-            .then(response => response.json())
-            .then(() => {
-                this.$emit('osvjezi');
-                this.jelo = { naziv: '', cijena: '', kategorija_id: '' };
-            });
+        popuniFormu(jelo) {
+            this.jelo = { naziv: jelo.naziv, cijena: jelo.cijena, kategorija_id: jelo.kategorija_id };
+            this.izmjena = true;
+            this.idZaIzmjenu = jelo.id;
+        },
+        sacuvaj() {
+            if (this.izmjena) {
+                fetch('/api/jela/' + this.idZaIzmjenu, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this.jelo)
+                })
+                .then(response => response.json())
+                .then(() => {
+                    this.$emit('osvjezi');
+                    this.otkazi();
+                });
+            } else {
+                fetch('/api/jela', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this.jelo)
+                })
+                .then(response => response.json())
+                .then(() => {
+                    this.$emit('osvjezi');
+                    this.jelo = { naziv: '', cijena: '', kategorija_id: '' };
+                });
+            }
+        },
+        otkazi() {
+            this.jelo = { naziv: '', cijena: '', kategorija_id: '' };
+            this.izmjena = false;
+            this.idZaIzmjenu = null;
         }
     }
 }

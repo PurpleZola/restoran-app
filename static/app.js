@@ -33,23 +33,17 @@ const app = Vue.createApp({
         ucitajKategorije() {
             fetch('/api/kategorije')
                 .then(response => response.json())
-                .then(data => {
-                    this.kategorije = data;
-                });
+                .then(data => { this.kategorije = data; });
         },
         ucitajJela() {
             fetch('/api/jela')
                 .then(response => response.json())
-                .then(data => {
-                    this.jela = data;
-                });
+                .then(data => { this.jela = data; });
         },
         ucitajSastojke() {
             fetch('/api/sastojci')
                 .then(response => response.json())
-                .then(data => {
-                    this.sastojci = data;
-                });
+                .then(data => { this.sastojci = data; });
         }
     },
 
@@ -57,19 +51,40 @@ const app = Vue.createApp({
     <h1>Restoran - Upravljanje menijem</h1>
 
     <h2>Kategorije</h2>
-    <tabela-kategorije :kategorije="kategorije" @osvjezi="ucitajKategorije()"></tabela-kategorije>
+    <tabela-kategorije 
+        :kategorije="kategorije" 
+        @osvjezi="ucitajKategorije()" 
+        @izmijeni="$refs.formaKategorije.popuniFormu($event)">
+    </tabela-kategorije>
     <h2>Dodaj kategoriju</h2>
-    <forma-kategorije @osvjezi="ucitajKategorije()"></forma-kategorije>
+    <forma-kategorije 
+        ref="formaKategorije"
+        @osvjezi="ucitajKategorije()">
+    </forma-kategorije>
 
     <h2>Jela</h2>
-    <tabela-jela :jela="jela" @osvjezi="ucitajJela()"></tabela-jela>
+    <tabela-jela 
+        :jela="jela" 
+        @osvjezi="ucitajJela()" 
+        @izmijeni="$refs.formaJela.popuniFormu($event)">
+    </tabela-jela>
     <h2>Dodaj jelo</h2>
-    <forma-jela :kategorije="kategorije" @osvjezi="ucitajJela()"></forma-jela>
+    <forma-jela 
+        ref="formaJela"
+        :kategorije="kategorije"
+        @osvjezi="ucitajJela()">
+    </forma-jela>
 
     <h2>Sastojci</h2>
-    <tabela-sastojci :sastojci="sastojci" @osvjezi="ucitajSastojke()"></tabela-sastojci>
+    <tabela-sastojci 
+        :sastojci="sastojci" 
+        @osvjezi="ucitajSastojke()">
+    </tabela-sastojci>
     <h2>Dodaj sastojak</h2>
-    <forma-sastojci :jela="jela" @osvjezi="ucitajSastojke()"></forma-sastojci>
+    <forma-sastojci 
+        :jela="jela"
+        @osvjezi="ucitajSastojke()">
+    </forma-sastojci>
     `
 });
 

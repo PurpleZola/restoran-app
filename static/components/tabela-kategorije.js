@@ -18,6 +18,7 @@ export default {
                 <td>{{ kategorija.opis }}</td>
                 <td>
                     <button @click="obrisi(kategorija.id)">Obrisi</button>
+                    <button @click="$emit('izmijeni', kategorija)">Izmijeni</button>
                 </td>
             </tr>
         </tbody>
@@ -26,7 +27,7 @@ export default {
 
     methods: {
         obrisi(id) {
-            fetch('/api/kategorije/' + id, { 
+            fetch('/api/kategorije/' + id, {
                 method: 'DELETE'
             })
             .then(response => response.json())
@@ -35,5 +36,4 @@ export default {
             });
         }
     }
-
 }

@@ -75,3 +75,7 @@ button {
 button:hover {
     background-color: #45a049;
 }
+
+td button {
+    margin-right: 5px;
+}
