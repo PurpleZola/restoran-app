@@ -20,6 +20,7 @@ export default {
                 <td>{{ sastojak.jelo_naziv }}</td>
                 <td>
                     <button @click="obrisi(sastojak.id)">Obrisi</button>
+                    <button @click="$emit('izmijeni', sastojak)">Izmijeni</button>
                 </td>
             </tr>
         </tbody>

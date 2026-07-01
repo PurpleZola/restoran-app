@@ -78,10 +78,12 @@ const app = Vue.createApp({
     <h2>Sastojci</h2>
     <tabela-sastojci 
         :sastojci="sastojci" 
-        @osvjezi="ucitajSastojke()">
+        @osvjezi="ucitajSastojke()" 
+        @izmijeni="$refs.formaSastojci.popuniFormu($event)">
     </tabela-sastojci>
     <h2>Dodaj sastojak</h2>
-    <forma-sastojci 
+        <forma-sastojci 
+        ref="formaSastojci"
         :jela="jela"
         @osvjezi="ucitajSastojke()">
     </forma-sastojci>
